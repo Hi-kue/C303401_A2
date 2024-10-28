@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e298d;
+            --primary-dark: #6058c9;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            color: var(--text);
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .profile-header {
+            background: var(--primary);
+            border-radius: 20px 20px 0 0;
+            height: 160px;
+            position: relative;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            bottom: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .info-section {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .timestamp {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+
+<div class="max-w-4xl mx-auto">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-img">
+                <i class="fas fa-user text-6xl text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="pt-20 pb-8">
+            <h1 class="text-2xl font-bold text-center" th:text="${student.legalFirstName + ' ' + student.legalLastName}">Placeholder Value</h1>
+            <p class="text-center text-gray-500 mt-2" th:text="${student.studentCredentials.currentProgram}">Placeholder Value</p>
+            <p class="text-center text-sm text-gray-400 mt-1" th:text="'Student ID: ' + ${student.studentCredentials.studentId}">Placeholder Value</p>
+        </div>
+
+        <div class="px-8">
+            <h2 class="section-title">Personal Information</h2>
+            <div class="space-y-1">
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Birth Date</div>
+                        <div class="font-medium" th:text="${#dates.format(student.birthDate, 'MMMM dd, yyyy')}"></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Gender</div>
+                        <div class="font-medium" th:text="${student.gender}"></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Email</div>
+                        <div class="font-medium" th:text="${student.email}"></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Phone</div>
+                        <div class="font-medium" th:text="${student.phoneNumber}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Academic Information</h2>
+            <div class="space-y-1">
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Program Duration</div>
+                        <div class="font-medium">
+                            <span th:text="${#dates.format(student.studentCredentials.startDate, 'MMM yyyy')}"></span> -
+                            <span th:text="${#dates.format(student.studentCredentials.endDate, 'MMM yyyy')}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Academic Skills</div>
+                        <div class="font-medium" th:text="${student.studentCredentials.academicSkills}"></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Address</div>
+                        <div class="font-medium" th:text="${student.address}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">System Information</h2>
+            <div class="space-y-1">
+                <div class="info-section">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Account Created</div>
+                        <div class="timestamp" th:text="${#dates.format(student.createdAt, 'MMMM dd, yyyy HH:mm')}"></div>
+                    </div>
+                </div>
+
+                <div class="info-section" th:if="${student.updatedAt != null}">
+                    <div class="info-icon">
+                        <i class="fas fa-pencil"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Last Updated</div>
+                        <div class="timestamp" th:text="${#dates.format(student.updatedAt, 'MMMM dd, yyyy HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-8 text-center">
+            <a th:href="@{/students}" class="btn inline-block">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Student List
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -39,14 +39,18 @@ public class Student implements Serializable {
     @Pattern(
             regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$",
             message = "Email provided is invalid.")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
+
+    @NotBlank(message = "Password is required, and must be provided.")
+    @Column(name = "password")
+    private String password;
 
     @NotBlank(message = "Phone number is required, and must be provided.")
     @Pattern(
             regexp = "^[0-9]{10}$",
             message = "Phone number provided is invalid.")
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @NotBlank(message = "Address is required, and must be provided.")
@@ -55,7 +59,14 @@ public class Student implements Serializable {
     private Address address;
 
     @NotBlank(message = "Student credentials is required, and must be provided.")
-    @Column(name = "student_credentials")
+    @AttributeOverrides({
+            @AttributeOverride(name = "studentId", column = @Column(name = "student_id")),
+            @AttributeOverride(name = "currentProgram", column = @Column(name = "current_program")),
+            @AttributeOverride(name = "startDate", column = @Column(name = "start_date")),
+            @AttributeOverride(name = "endDate", column = @Column(name = "end_date")),
+            @AttributeOverride(name = "academicSkills", column = @Column(name = "ead_student_acd_skills"))
+    })
+    @Embedded
     private StudentCredentials studentCredentials;
 
     //region Timestamps Information
@@ -67,5 +78,15 @@ public class Student implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt;
     //endregion
+
+    @PrePersist
+    public void onCreate() {
+        createdAt = new Date();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = new Date();
+    }
 }
 

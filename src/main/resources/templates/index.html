@@ -3,10 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing Application</title>
-    <link rel="stylesheet" href="/output.css">
+    <title>Student Registration & Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e298d;
+            --primary-dark: #6058c9;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            color: var(--text);
+            background-color: var(--bg);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 0;
+            width: 300px;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification-content {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 16px;
+            margin: 10px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-title {
+            font-weight: bold;
+            color: #721c24;
+        }
+
+        .notification-message {
+            color: #721c24;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .auth-header {
+            background: var(--primary);
+            border-radius: 20px 20px 0 0;
+            height: 120px;
+            position: relative;
+        }
+
+        .form-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 41, 141, 0.1);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            position: relative;
+        }
+
+        .divider-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 1rem;
+            color: #64748b;
+        }
+    </style>
 </head>
 
-<body>
-    <h1>Hello World this Route is Working</h1>
+<body class="min-h-screen py-12 px-4">
+<div class="max-w-2xl mx-auto">
+    <div id="errorNotification" class="notification transform translate-x-full">
+        <div class="notification-content">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-xl mr-2"></i>
+                    <div class="notification-title">Error Occurred!</div>
+                </div>
+                <button onclick="closeNotification()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="notification-message mt-2"></div>
+        </div>
+    </div>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="form-icon">
+                <i class="fas fa-user-graduate text-5xl"></i>
+            </div>
+        </div>
+
+        <div class="p-12 pt-20">
+            <div>
+                <h2 class="text-3xl font-bold text-center mb-12">Register</h2>
+                <!-- TODO: Implement onsubmit() event handler -->
+                <form id="registerForm" onsubmit="" class="space-y-6">
+                    <div class="input-group">
+                        <i class="fas fa-user text-xl"></i>
+                        <input type="text" class="form-input text-lg py-3 px-4" placeholder="Full Name" id="fullName" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <input type="email" class="form-input text-lg py-3 px-4" placeholder="Email" id="regEmail" required>
+                    </div>
+
+                    <div class="input-group" id="studentIdGroup">
+                        <div class="flex w-full gap-3">
+                            <i class="fas fa-id-card text-xl"></i>
+                            <input type="text" class="form-input text-lg py-3 px-4" placeholder="Student ID" id="studentId" required>
+
+                            <button type="button" onclick="generateStudentId(10)" class="btn text-lg py-3 px-4 rounded-lg flex items-center justify-center min-w-[120px]">
+                                Generate
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock text-xl"></i>
+                        <input type="password" class="form-input text-lg py-3 px-4" placeholder="Password" id="regPassword" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock text-xl"></i>
+                        <input type="password" class="form-input text-lg py-3 px-4" placeholder="Confirm Password" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" onsubmit="checkRegexConformity()" class="btn text-lg py-3 px-6">
+                        <i class="fas fa-user-plus mr-2"></i>Register
+                    </button>
+                </form>
+            </div>
+
+            <div class="divider my-12">
+                <span class="divider-text text-lg">OR</span>
+            </div>
+
+            <div>
+                <h2 class="text-3xl font-bold text-center mb-12">Login</h2>
+                <!-- TODO: Implement onsubmit() event handler -->
+                <form id="loginForm" onsubmit="" class="space-y-6">
+                    <div class="input-group">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <input type="email" class="form-input text-lg py-3 px-4" placeholder="Email" id="loginEmail" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock text-xl"></i>
+                        <input type="password" class="form-input text-lg py-3 px-4" placeholder="Password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn text-lg py-3 px-6">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const regexPatternPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regexPatternEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regexPatternStudentId = /^STUDENT-[0-9A-Z]{10}$/;
+    const regexPatternFullName = /^[a-zA-Z\s]{2,}$/;
+
+    const checkRegexConformity = () => {
+        const regPassword = document.getElementById("regPassword");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const regEmail = document.getElementById("regEmail");
+        const loginEmail = document.getElementById("loginEmail");
+        const studentId = document.getElementById("studentId");
+        const fullName = document.getElementById("fullName");
+
+        if (!checkRegex(regexPatternPassword, regPassword)) {
+            return false;
+        }
+
+        if (!checkRegex(regexPatternPassword, confirmPassword)) {
+            return false;
+        }
+
+        if (!checkRegex(regexPatternEmail, regEmail)) {
+            return false;
+        }
+
+        if (!checkRegex(regexPatternStudentId, studentId)) {
+            return false;
+        }
+
+        return checkRegex(regexPatternFullName, fullName);
+    }
+
+    const checkRegex = (regexPattern, input) => {
+        if (!regexPattern.test(input.value)) {
+            showNotification("Input provided does not match the required format.");
+            return false;
+        }
+
+        return true;
+    }
+
+    const showNotification = (message) => {
+        const notification = document.getElementById("errorNotification");
+        const notificationMessage = document.getElementById(".notification-message");
+
+        notificationMessage.textContent = message;
+        notification.classList.add("show-notification")
+    }
+
+    const closeNotification = () => {
+        const notification = document.getElementById("errorNotification");
+        notification.classList.remove("show-notification")
+    }
+
+    const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const generateStudentId = (length) => {
+        let studentId = "STUDENT-";
+
+        for (let i = 0; i < length; i++) {
+            studentId += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        document.getElementById('studentId').value = studentId;
+
+        return studentId;
+    }
+</script>
 </body>
+</html>

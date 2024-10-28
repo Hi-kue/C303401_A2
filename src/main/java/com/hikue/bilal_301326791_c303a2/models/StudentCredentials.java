@@ -1,16 +1,13 @@
 package com.hikue.bilal_301326791_c303a2.models;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Data
 @Embeddable
 public class StudentCredentials implements Serializable {
     @NotBlank(message = "Student Id is required, and must be provided.")
@@ -34,5 +31,9 @@ public class StudentCredentials implements Serializable {
     Date endDate;
 
     @ElementCollection
+    @CollectionTable(
+            name = "ead_student_acd_skills",
+            joinColumns = @JoinColumn(name = "student_id")
+    )
     ArrayList<String> academicSkills; // NOTE: Would have been named "technicalSkills" but it didn't sound right.
 }

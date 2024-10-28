@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### ENV PROPERTIES ###
+### .env Properties ###
 /env.properties
+
+
+### CA Certificate ###
+/db/certificate.crt
