@@ -24,17 +24,13 @@ public class Enrollment {
     @Column(name = "application_id")
     private Long applicationId;
 
-    @NotBlank(message = "Student ID is required, and must be provided.")
-    @Column(name = "student_id")
-    private Long studentId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
-    @NotBlank(message = "Program code is required, and must be provided.")
-    @Column(name = "program_code")
-    private String programCode;
-
-    @NotBlank(message = "Program start date is required, and must be provided.")
-    @Column(name = "program_start_date")
-    private Date programStartDate;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "program_id", nullable = false)
+    private Program program;
 
     @NotBlank(message = "Amount paid is required, and must be provided.")
     @Min(value = 0, message = "Amount paid must be greater than or equal to zero.")

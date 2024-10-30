@@ -1,6 +1,7 @@
 package com.hikue.bilal_301326791_c303a2.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -19,33 +20,37 @@ public class Program {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Program code is required, and must be provided.")
+    @NotBlank(message = "Program code is required, and must be provided.")
     @Column(name = "program_code",unique = true)
     private String programCode;
 
-    @NotNull(message = "Program name is required, and must be provided.")
+    @NotBlank(message = "Program name is required, and must be provided.")
     @Column(name = "program_name", unique = true)
     private String programName;
 
-    @NotNull(message = "Program start date is required, and must be provided.")
+    @NotBlank(message = "Program start date is required, and must be provided.")
     @Column(name = "program_start_date")
     private Date programStartDate;
 
-    @NotNull(message = "Program end date is required, and must be provided.")
+    @NotBlank(message = "Program end date is required, and must be provided.")
     @Column(name = "program_end_date")
     private Date programEndDate;
 
-    @NotNull(message = "Program fee is required, and must be provided.")
+    @NotBlank(message = "Program fee is required, and must be provided.")
     @Column(name = "program_fee")
     private double programFee;
 
-    @NotNull(message = "Program professor is required, and must be provided.")
+    @NotBlank(message = "Program professor is required, and must be provided.")
     @Pattern(
             regexp = "^[a-zA-Z\\s]{2,}$",
             message = "Program professor provided is invalid."
     )
     @Column(name = "program_professor")
     private String programProfessor;
+
+    @NotBlank(message = "Program status is required, and must be provided.")
+    @Column(name = "program_status")
+    private String programStatus;
 
     //region Timestamps Information
     @Temporal(TemporalType.TIMESTAMP)

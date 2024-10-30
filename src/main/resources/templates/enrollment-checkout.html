@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/output.css">
+    <style>
+        :root {
+            --primary: #2e298d;
+            --primary-dark: #6058c9;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            color: var(--text);
+            background-color: var(--bg);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-8">
+        <h1 class="text-2xl font-bold mb-6">Enrollment Checkout</h1>
+
+        <form th:action="@{/enrollments}" th:object="${enrollment}" method="POST" class="space-y-6">
+            <input type="hidden" th:field="*{applicationId}" />
+            <input type="hidden" th:field="*{studentId}" />
+
+            <!-- Program Information -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold mb-4">Program Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Program Code</label>
+                        <input type="text" th:field="*{programCode}" readonly
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Start Date</label>
+                        <input type="date" th:field="*{programStartDate}" readonly
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Amount to Pay</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" step="0.01" th:field="*{amountPaid}" required
+                               class="mt-1 block w-full pl-7 rounded-md border-gray-300 shadow-sm"
+                               th:classappend="${#fields.hasErrors('amountPaid')} ? 'border-red-300' : ''">
+                    </div>
+                    <p class="mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('amountPaid')}"
+                       th:errors="*{amountPaid}"></p>
+                </div>
+            </div>
+
+            <!-- Status Information -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Application Status</label>
+                <select th:field="*{applicationStatus}" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option th:each="status : ${T(com.yourpackage.ApplicationStatusType).values()}"
+                            th:value="${status}"
+                            th:text="${status}">
+                    </option>
+                </select>
+                <p class="mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('applicationStatus')}"
+                   th:errors="*{applicationStatus}"></p>
+            </div>
+
+            <!-- Timestamps -->
+            <div class="text-sm text-gray-500 mt-4">
+                <p th:if="*{createdAt != null}">
+                    Created: <span th:text="${#dates.format(enrollment.createdAt, 'MM/dd/yyyy HH:mm')}"></span>
+                </p>
+                <p th:if="*{updatedAt != null}">
+                    Last Updated: <span th:text="${#dates.format(enrollment.updatedAt, 'MM/dd/yyyy HH:mm')}"></span>
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <button type="submit"
+                        class="btn w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-md font-medium text-white">
+                    Complete Enrollment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

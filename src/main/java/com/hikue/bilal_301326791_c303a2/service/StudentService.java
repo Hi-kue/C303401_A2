@@ -1,6 +1,5 @@
 package com.hikue.bilal_301326791_c303a2.service;
 
-import com.hikue.bilal_301326791_c303a2.models.Address;
 import com.hikue.bilal_301326791_c303a2.models.Student;
 import com.hikue.bilal_301326791_c303a2.models.StudentCredentials;
 import com.hikue.bilal_301326791_c303a2.models.enums.GenderType;
@@ -9,11 +8,9 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class StudentService {
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     @Autowired
     public StudentService(StudentRepository studentRepository) {
@@ -71,17 +68,14 @@ public class StudentService {
         return student;
     }
 
-    // TODO: Check if this method works properly.
     public Iterable<Student> findAllStudentsByGender(@NonNull GenderType genderType) {
         return studentRepository.findAllByGender(genderType);
     }
 
-    // TODO: Check if this method works properly.
     public Student findFirstStudentByGender(@NonNull GenderType genderType) {
         return studentRepository.findAllByGender(genderType).iterator().next();
     }
 
-    // TODO: Check if this method works properly.
     public Student findStudentByStudentCredentials(@NonNull StudentCredentials studentCredentials) {
         Student student = studentRepository.findStudentByStudentCredentials(studentCredentials);
 
@@ -90,25 +84,6 @@ public class StudentService {
         }
 
         return student;
-    }
-
-    // TODO: Check if this method works properly.
-    public Student findStudentByAddressContainingIgnoreCase(@NonNull Address address) {
-        Student student = studentRepository
-                .findStudentByAddressContainingIgnoreCase(address)
-                .stream()
-                .findFirst()
-                .orElse(null);
-
-        if (student == null) {
-            throw new IllegalArgumentException(String.format("Student with address: %s does not exist.", address));
-        }
-
-        return student;
-    }
-
-    public boolean isStudentExist(@NonNull Student student) {
-        return studentRepository.findStudentById(student.getId()) != null;
     }
 
     public boolean studentLogin(

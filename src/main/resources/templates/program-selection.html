@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Selection | Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e298d;
+            --primary-dark: #6058c9;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            color: var(--text);
+            background-color: var(--bg);
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .program-card.selected {
+            border: 2px solid var(--primary);
+            background-color: rgba(46, 41, 141, 0.05);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 41, 141, 0.1);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-12 px-4">
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-8" th:text="${'Available Programs for ' + student.legalFirstName + ' ' + student.legalLastName}"></h1>
+
+    <div class="mb-8 flex flex-wrap gap-4">
+        <div class="relative flex-1">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text"
+                   class="search-input"
+                   placeholder="Search programs..."
+                   oninput="searchPrograms(this.value)">
+        </div>
+        <select class="px-4 py-2 border rounded-lg" th:onchange="'filterPrograms(this.value)'">
+            <option value="all">All Programs</option>
+            <option value="active">Active Programs</option>
+            <option value="upcoming">Upcoming Programs</option>
+            <option value="completed">Completed Programs</option>
+        </select>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="programsGrid">
+        <div th:each="program : ${programs}" class="program-card p-6" th:onclick="'selectProgram(this)'" th:data-program-id="${program.id}">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-bold" th:text="${program.name}"></h3>
+                <span class="text-sm px-2 py-1 rounded-full"
+                      th:classappend="${@boundedComponents.getStatusClass(program.status)}"
+                      th:text="${program.status}">
+                </span>
+            </div>
+            <div class="space-y-2 text-gray-600">
+                <p>
+                    <i class="fas fa-user-tie mr-2"></i>
+                    <span th:text="${program.professor}"></span>
+                </p>
+                <p>
+                    <i class="fas fa-calendar mr-2"></i>
+                    <span th:text="${#temporals.format(program.startDate, 'MMM d, yyyy')} + ' - ' + ${#temporals.format(program.endDate, 'MMM d, yyyy')}"></span>
+                </p>
+                <p>
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    <span th:text="${#numbers.formatCurrency(program.fee)}"></span>
+                </p>
+                <p>
+                    <i class="fas fa-box mr-2"></i>
+                    <span th:text="${program.id}"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-end">
+        <button th:onclick="'proceedWithSelected()'" class="btn">
+            <i class="fas fa-arrow-right mr-2"></i>Continue with Selected Program
+        </button>
+    </div>
+</div>
+
+<script>
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    const renderPrograms = (programsToRender = programs) => {
+        const grid = document.getElementById('programsGrid');
+        grid.innerHTML = programsToRender.map(program => createProgramCard(program)).join('');
+    }
+
+    const selectProgram = (element) => {
+        document.querySelectorAll('.program-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        element.classList.add('selected');
+    }
+
+    const searchPrograms = (query) => {
+        const filtered = programs.filter(program =>
+            program.name.toLowerCase().includes(query.toLowerCase()) ||
+            program.professor.toLowerCase().includes(query.toLowerCase()) ||
+            program.id.toLowerCase().includes(query.toLowerCase())
+        );
+        renderPrograms(filtered);
+    }
+
+    const filterPrograms = (status) => {
+        if (status === 'all') {
+            renderPrograms();
+            return;
+        }
+
+        const filtered = programs.filter(program => program.status === status);
+        renderPrograms(filtered);
+    }
+
+    const proceedWithSelectedProgram = () => {
+        const selectedProgram = document.querySelector('.program-card.selected');
+        if (!selectedProgram) {
+            alert('Please select a program to proceed with');
+            return;
+        }
+
+        const programId = selectedProgram.dataset.programId;
+        console.log('Selected program:', programId);
+    }
+
+    renderPrograms();
+</script>
+</body>
+</html>

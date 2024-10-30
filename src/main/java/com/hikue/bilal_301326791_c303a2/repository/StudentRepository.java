@@ -1,6 +1,5 @@
 package com.hikue.bilal_301326791_c303a2.repository;
 
-import com.hikue.bilal_301326791_c303a2.models.Address;
 import com.hikue.bilal_301326791_c303a2.models.Student;
 import com.hikue.bilal_301326791_c303a2.models.StudentCredentials;
 import com.hikue.bilal_301326791_c303a2.models.enums.GenderType;
@@ -14,6 +13,5 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
     Student findStudentById(Long id);
     Student findStudentByEmail(String email);
     List<Student> findAllByGender(GenderType genderType);
-    List<Student> findStudentByAddressContainingIgnoreCase(Address address);
     Student findStudentByStudentCredentials(StudentCredentials studentCredentials);
 }
